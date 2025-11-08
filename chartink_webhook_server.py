@@ -7,20 +7,19 @@ from openpyxl import load_workbook
 from datetime import datetime
 import os
 import json
-from google_drive_handler import GoogleDriveHandler
+# Google Drive integration removed - will add back later
 
 class ChartinkWebhookHandler:
     def __init__(self, excel_file="Chartink_Workflow.xlsx"):
         self.excel_file = excel_file
-        self.use_google_drive = os.environ.get('USE_GOOGLE_DRIVE', 'false').lower() == 'true'
-        self.drive_handler = GoogleDriveHandler() if self.use_google_drive else None
+        # Google Drive integration disabled for now
+        self.use_google_drive = False
+        self.drive_handler = None
         self.current_iteration = self.get_next_iteration_number()
         
     def get_next_iteration_number(self):
         try:
-            # Download from Google Drive if using cloud storage
-            if self.use_google_drive and self.drive_handler:
-                self.drive_handler.download_excel_file(self.excel_file, self.excel_file)
+            # Excel file will be created locally on server
             
             if not os.path.exists(self.excel_file):
                 return 1
@@ -124,9 +123,7 @@ class ChartinkWebhookHandler:
                 worksheet.append(row.tolist())
             workbook.save(self.excel_file)
             
-            # Upload to Google Drive if using cloud storage
-            if self.use_google_drive and self.drive_handler:
-                self.drive_handler.upload_excel_file(self.excel_file)
+            # Excel file saved locally on server
             
             self.current_iteration += 1
             
