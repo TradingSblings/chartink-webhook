@@ -1,6 +1,6 @@
 #!/usr/bin/env python3
 
-from flask import Flask, request, jsonify
+from flask import Flask, request, jsonify, send_file
 import pandas as pd
 import openpyxl
 from openpyxl import load_workbook
@@ -151,6 +151,32 @@ def chartink_webhook():
     except Exception as e:
         return jsonify({"status": "error", "message": str(e)}), 500
 
+@app.route('/download', methods=['GET'])
+def download_excel():
+    try:
+        excel_file = "Chartink_Workflow.xlsx"
+        if os.path.exists(excel_file):
+            return send_file(
+                excel_file,
+                mimetype='application/vnd.openxmlformats-officedocument.spreadsheetml.sheet',
+                as_attachment=True,
+                download_name='Chartink_Workflow.xlsx'
+            )
+        else:
+            return jsonify({"status": "error", "message": "Excel file not found"}), 404
+    except Exception as e:
+        return jsonify({"status": "error", "message": str(e)}), 500
+
+@app.route('/', methods=['GET'])
+def home():
+    return jsonify({
+        "status": "online",
+        "service": "Chartink Webhook Server",
+        "endpoints": {
+            "webhook": "/webhook (POST) - Receive Chartink alerts",
+            "download": "/download (GET) - Download Excel file"
+        }
+    })
 
 if __name__ == '__main__':
     import os
