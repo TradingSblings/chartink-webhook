@@ -1,21 +1,49 @@
-# Local development files
-chartink_webhook_env/
-*.pyc
-__pycache__/
-.env
-.DS_Store
-venv/
-env/
+# Google Drive Credentials - NEVER COMMIT!
+credentials.json
+*.json
 
-# Local Excel files (will be created on server)
-test*.xlsx
+# Excel Files
 *.xlsx
+*.xls
 
-# IDE files
+# Python
+__pycache__/
+*.py[cod]
+*$py.class
+*.so
+.Python
+env/
+venv/
+ENV/
+build/
+develop-eggs/
+dist/
+downloads/
+eggs/
+.eggs/
+lib/
+lib64/
+parts/
+sdist/
+var/
+wheels/
+*.egg-info/
+.installed.cfg
+*.egg
+
+# IDE
 .vscode/
 .idea/
 *.swp
 *.swo
+*~
 
-# OS files
+# OS
+.DS_Store
 Thumbs.db
+
+# Logs
+*.log
+
+# Environment variables
+.env
