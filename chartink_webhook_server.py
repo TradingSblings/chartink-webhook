@@ -23,15 +23,27 @@ class GoogleDriveHandler:
     def initialize_drive(self):
         """Initialize Google Drive API connection"""
         try:
-            if not os.path.exists(self.credentials_file):
-                print(f"Warning: {self.credentials_file} not found. Google Drive disabled.")
-                return False
+            # Check for environment variable first (for Render/cloud deployment)
+            creds_json = os.environ.get('GOOGLE_CREDENTIALS_JSON')
             
-            # Use service account credentials
-            creds = service_account.Credentials.from_service_account_file(
-                self.credentials_file,
-                scopes=['https://www.googleapis.com/auth/drive.file']
-            )
+            if creds_json:
+                print("📝 Using credentials from environment variable")
+                # Parse JSON from environment variable
+                creds_info = json.loads(creds_json)
+                creds = service_account.Credentials.from_service_account_info(
+                    creds_info,
+                    scopes=['https://www.googleapis.com/auth/drive.file']
+                )
+            elif os.path.exists(self.credentials_file):
+                print(f"📝 Using credentials from file: {self.credentials_file}")
+                # Use service account credentials from file
+                creds = service_account.Credentials.from_service_account_file(
+                    self.credentials_file,
+                    scopes=['https://www.googleapis.com/auth/drive.file']
+                )
+            else:
+                print(f"⚠️  Warning: No credentials found. Google Drive disabled.")
+                return False
             
             self.service = build('drive', 'v3', credentials=creds)
             print("✅ Google Drive API initialized successfully")
